@@ -196,9 +196,26 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>pushButton_2</sender>
+   <signal>clicked()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>check_teams()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>110</x>
+     <y>569</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>393</x>
+     <y>571</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>select_dir()</slot>
   <slot>open_section()</slot>
+  <slot>check_teams()</slot>
  </slots>
 </ui>

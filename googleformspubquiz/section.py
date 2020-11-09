@@ -51,3 +51,18 @@ class Section(object):
         max_possible_score = len(self.questions) * len(self.responses)
 
         return correct_answers / max_possible_score
+
+    def response_for_team(self, team):
+        responses = [response for response in self.responses if response.team == team]
+        if responses:
+            return responses[0]
+        else:
+            return None
+
+    def teams(self):
+        return {response.team for response in self.responses}
+
+    def change_team_name(self, from_name, to_name):
+        for response in self.responses:
+            if response.team == from_name:
+                response.team = to_name

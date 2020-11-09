@@ -35,3 +35,11 @@ class Quiz:
         for section in self.sections:
             if section.name == name:
                 return section
+
+    def sections_per_team(self):
+        return {team: {
+            section: bool(section.response_for_team(team)) for section in self.sections
+        } for team in self.teams()}
+
+    def teams(self):
+        return set.union(*[section.teams() for section in self.sections])

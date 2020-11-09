@@ -9,6 +9,7 @@ from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
 from googleformspubquiz import Section
 from quiz import Quiz
 from ui.SectionWindow import SectionWindow
+from ui.TeamsWindow import TeamsWindow
 
 uidir = pathlib.Path(__file__).parent
 
@@ -84,4 +85,6 @@ class PubQuizWindow(QMainWindow):
         self.label_team_problems.setText('{} teams have not answered all sections'.format(incomplete))
 
     def check_teams(self):
-        pass
+        teams_window = TeamsWindow(self.pubquiz)
+        teams_window.exec_()
+        self.refresh()
