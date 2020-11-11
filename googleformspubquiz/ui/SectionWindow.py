@@ -35,6 +35,7 @@ class SectionWindow(QDialog):
         self.label_percentage_correct.setText('{:.0f}% correct'.format(percentage_correct))
 
         self.widget_answer_table.clearContents()
+        self.widget_answer_table.setSortingEnabled(False)
 
         answers = question.answer_list()
         self.widget_answer_table.setRowCount(len(answers))
@@ -65,6 +66,7 @@ class SectionWindow(QDialog):
 
             self.answer_info.append([question, answer])
 
+        self.widget_answer_table.setSortingEnabled(True)
         self.widget_answer_table.blockSignals(False)
 
     def cell_changed(self, row, column):

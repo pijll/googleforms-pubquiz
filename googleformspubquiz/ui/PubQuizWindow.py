@@ -3,8 +3,8 @@ import pathlib
 from typing import Optional
 
 from PyQt5 import uic
-from PyQt5.QtCore import QTimer
-from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem
+from PyQt5.QtCore import QTimer, Qt
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView
 
 from googleformspubquiz import Section
 from quiz import Quiz
@@ -24,6 +24,10 @@ class PubQuizWindow(QMainWindow):
         self.timer = QTimer()
         self.timer.timeout.connect(self.check_directory)
 
+        self.widget_sectiontable.horizontalHeader().setSectionResizeMode(0, QHeaderView.Stretch)
+        self.widget_leaderboard.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.widget_leaderboard.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
+
     def select_dir(self):
         self.timer.stop()
         # directory = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
@@ -38,7 +42,9 @@ class PubQuizWindow(QMainWindow):
         self.widget_sectiontable.setRowCount(len(self.pubquiz.sections))
         for row, section in enumerate(self.pubquiz.sections):
             self.widget_sectiontable.setItem(row, 0, QTableWidgetItem(section.name))
-            self.widget_sectiontable.setItem(row, 1, QTableWidgetItem('{:.0f}'.format(section.fraction_of_correct_answers()*100)))
+            score_item = QTableWidgetItem('{:.0f}'.format(section.fraction_of_correct_answers()*100))
+            self.widget_sectiontable.setItem(row, 1, score_item)
+            score_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
 
     def open_section(self, row, column):
         section = self.pubquiz.sections[row]
@@ -52,7 +58,9 @@ class PubQuizWindow(QMainWindow):
         for row, (i, team, points) in enumerate(leaderboard):
             self.widget_leaderboard.setItem(row, 0, QTableWidgetItem(i))
             self.widget_leaderboard.setItem(row, 1, QTableWidgetItem(team))
-            self.widget_leaderboard.setItem(row, 2, QTableWidgetItem(points))
+            points_item = QTableWidgetItem(points)
+            self.widget_leaderboard.setItem(row, 2, points_item)
+            points_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
 
     def refresh(self):
         self.fill_section_list()
