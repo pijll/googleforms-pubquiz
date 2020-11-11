@@ -1,7 +1,7 @@
 import pathlib
 
 from PyQt5 import uic, QtCore, QtGui
-from PyQt5.QtWidgets import QDialog, QTableWidgetItem
+from PyQt5.QtWidgets import QDialog, QTableWidgetItem, QHeaderView
 
 uidir = pathlib.Path(__file__).parent
 
@@ -13,6 +13,8 @@ class SectionWindow(QDialog):
 
         self.section = section
         self.widget_section_name.setText(section.name)
+
+        self.widget_answer_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.Stretch)
 
         self.answer_info = None
         self.current_question = 0
