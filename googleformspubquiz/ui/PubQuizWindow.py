@@ -4,7 +4,7 @@ from typing import Optional
 
 from PyQt5 import uic
 from PyQt5.QtCore import QTimer, Qt
-from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView
+from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView, QFileDialog
 
 from googleformspubquiz import Section
 from quiz import Quiz
@@ -30,8 +30,7 @@ class PubQuizWindow(QMainWindow):
 
     def select_dir(self):
         self.timer.stop()
-        # directory = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
-        self.directory = r'/home/pijll/PycharmProjects/GoogleFormsPubquiz/tests/testdata'
+        self.directory = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
         self.widget_pubquiz_dir.setText(self.directory)
 
         self.pubquiz = Quiz.load_dir(self.directory)
