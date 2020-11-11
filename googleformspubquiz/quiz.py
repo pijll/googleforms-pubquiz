@@ -1,5 +1,7 @@
 import collections
+import io
 import pathlib
+import zipfile
 
 from section import Section
 
@@ -17,13 +19,25 @@ class Quiz:
     @classmethod
     def load_dir(cls, directory):
         quiz = Quiz()
+        quiz.update_from_dir(directory)
+        return quiz
+
+    def update_from_dir(self, directory):
         for p in pathlib.Path(directory).iterdir():
             if p.is_file() and p.suffix == '.csv':
-                with p.open() as infile:
-                    section = Section.read_csv(infile, name=p.stem)
-                quiz.sections.append(section)
-
-        return quiz
+                section_name = p.stem
+                if not self.get_section(section_name):
+                    with p.open() as infile:
+                        section = Section.read_csv(infile, name=section_name)
+                    self.sections.append(section)
+            elif p.is_file() and p.suffixes == ['.csv', '.zip']:
+                csv_name = p.stem
+                section_name = p.stem.split('.')[0]
+                if not self.get_section(section_name):
+                    with zipfile.ZipFile(p, 'r') as zipped_file:
+                        with io.TextIOWrapper(zipped_file.open(csv_name, 'r')) as infile:
+                            section = Section.read_csv(infile, name=section_name)
+                        self.sections.append(section)
 
     def leaderboard(self):
         previous_score = None

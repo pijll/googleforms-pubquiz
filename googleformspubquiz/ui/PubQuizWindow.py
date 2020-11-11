@@ -68,15 +68,7 @@ class PubQuizWindow(QMainWindow):
         self.refresh_teams_label()
 
     def check_directory(self):
-        for p in pathlib.Path(self.directory).iterdir():
-            if p.is_file() and p.suffix == '.csv':
-                section_name = p.stem
-                section = self.pubquiz.get_section(section_name)
-                if not section:
-                    with p.open() as infile:
-                        section = Section.read_csv(infile, name=section_name)
-                    self.pubquiz.sections.append(section)
-
+        self.pubquiz.update_from_dir(self.directory)
         self.refresh()
 
     def refresh_teams_label(self):
