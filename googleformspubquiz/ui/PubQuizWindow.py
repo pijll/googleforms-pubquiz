@@ -48,7 +48,7 @@ class PubQuizWindow(QMainWindow):
 
     def open_section(self, row, column):
         section = self.pubquiz.sections[row]
-        section_window = SectionWindow(section=section)
+        section_window = SectionWindow(section=section, directory=self.directory)
         section_window.exec_()
         self.refresh()
 

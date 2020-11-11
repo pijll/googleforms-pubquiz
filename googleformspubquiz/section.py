@@ -1,6 +1,9 @@
 import collections
 import csv
+import pathlib
 from typing import List
+
+import yaml
 
 from answer import Answer
 from response import Response
@@ -66,3 +69,35 @@ class Section(object):
         for response in self.responses:
             if response.team == from_name:
                 response.team = to_name
+
+    def save_answers(self, out_file):
+        if isinstance(out_file, str):
+            path = pathlib.Path(out_file)
+            self.save_answers(path)
+            return
+        elif isinstance(out_file, pathlib.Path):
+            if out_file.is_dir():
+                out_file = out_file / (self.name + '.yaml')
+            with out_file.open('w') as stream:
+                self.save_answers(stream)
+            return
+
+        data = [list(question.correct_answers) for question in self.questions]
+        yaml.dump(data, out_file, default_flow_style=False, allow_unicode=True)
+
+    def load_answers(self, in_file):
+        if isinstance(in_file, str):
+            path = pathlib.Path(in_file)
+            self.load_answers(path)
+            return
+        elif isinstance(in_file, pathlib.Path):
+            if in_file.is_dir():
+                in_file = in_file / (self.name + '.yaml')
+            with in_file.open() as stream:
+                self.load_answers(stream)
+            return
+
+        data_loaded = yaml.safe_load(in_file)
+
+        for question, correct_answers in zip(self.questions, data_loaded):
+            question.correct_answers = correct_answers

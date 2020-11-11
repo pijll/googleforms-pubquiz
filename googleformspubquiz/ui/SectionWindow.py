@@ -7,10 +7,11 @@ uidir = pathlib.Path(__file__).parent
 
 
 class SectionWindow(QDialog):
-    def __init__(self, section):
+    def __init__(self, section, directory=None):
         super().__init__()
         uic.loadUi(uidir/'SectionWindow.ui', self)
 
+        self.directory = directory
         self.section = section
         self.widget_section_name.setText(section.name)
 
@@ -81,5 +82,5 @@ class SectionWindow(QDialog):
         self.go_to_question(self.current_question)
 
     def close_window(self):
-        # save answers
+        self.section.save_answers(self.directory)
         self.accept()

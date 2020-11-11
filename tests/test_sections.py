@@ -1,3 +1,4 @@
+import io
 import textwrap
 import unittest
 
@@ -76,6 +77,40 @@ class TestCorrectAnswers(unittest.TestCase):
 
         # ASSERT
         self.assertEqual(result, 2)
+
+
+class TestYaml(unittest.TestCase):
+    def test_save_answers(self):
+        # ARRANGE
+        questions = [Question(name='Question '+ca, correct_answers=['Answer '+ca]) for ca in ('1', '2', '3')]
+        section = Section(questions=questions)
+        out_stream = io.StringIO()
+
+        # ACT
+        section.save_answers(out_stream)
+
+        # ASSERT
+        self.assertEqual(out_stream.getvalue(), textwrap.dedent("""\
+            - - Answer 1
+            - - Answer 2
+            - - Answer 3
+        """))
+
+    def test_load_answers(self):
+        # ARRANGE
+        questions = [Question(name='Question '+ca) for ca in ('1', '2', '3')]
+        section = Section(questions=questions)
+        in_stream = io.StringIO(textwrap.dedent("""\
+            - - Answer 1
+            - - Answer 2
+            - - Answer 3
+        """))
+
+        # ACT
+        section.load_answers(in_stream)
+
+        # ASSERT
+        self.assertEqual(list(questions[0].correct_answers), ['Answer 1'])
 
 
 if __name__ == '__main__':

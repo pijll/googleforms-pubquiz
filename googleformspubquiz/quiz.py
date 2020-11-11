@@ -30,6 +30,10 @@ class Quiz:
                     with p.open() as infile:
                         section = Section.read_csv(infile, name=section_name)
                     self.sections.append(section)
+
+                    yaml_name = p.with_suffix('.yaml')
+                    if yaml_name.exists():
+                        section.load_answers(yaml_name)
             elif p.is_file() and p.suffixes == ['.csv', '.zip']:
                 csv_name = p.stem
                 section_name = p.stem.split('.')[0]
@@ -38,6 +42,11 @@ class Quiz:
                         with io.TextIOWrapper(zipped_file.open(csv_name, 'r')) as infile:
                             section = Section.read_csv(infile, name=section_name)
                         self.sections.append(section)
+                    yaml_name = p.parent / (section_name + '.yaml')
+                    print(yaml_name)
+                    if yaml_name.exists():
+                        print('loading')
+                        section.load_answers(yaml_name)
 
     def leaderboard(self):
         previous_score = None

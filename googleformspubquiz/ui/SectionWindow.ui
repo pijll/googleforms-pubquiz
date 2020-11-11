@@ -164,7 +164,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>Close</string>
+        <string>Save &amp;&amp; Close</string>
        </property>
       </widget>
      </item>
