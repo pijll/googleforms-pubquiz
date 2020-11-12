@@ -43,9 +43,7 @@ class Quiz:
                             section = Section.read_csv(infile, name=section_name)
                         self.sections.append(section)
                     yaml_name = p.parent / (section_name + '.yaml')
-                    print(yaml_name)
                     if yaml_name.exists():
-                        print('loading')
                         section.load_answers(yaml_name)
 
     def leaderboard(self):

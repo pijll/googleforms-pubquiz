@@ -60,7 +60,7 @@ class TestAnswers(unittest.TestCase):
         # ARRANGE
         question = Question(correct_answers=['3', '2'])
         for answer_string in ('1', '2', '3', '4', '5'):
-            answer = Answer(question=question, answer=answer_string)
+            Answer(question=question, answer=answer_string)
 
         # ACT
         result = question.fraction_of_correct_responses()
@@ -72,7 +72,7 @@ class TestAnswers(unittest.TestCase):
         # ARRANGE
         question = Question(correct_answers=['3', '6'])
         for answer_string in ('1', '3'):
-            answer = Answer(question=question, answer=answer_string)
+            Answer(question=question, answer=answer_string)
 
         # ACT
         result = question.answer_list()

@@ -1,7 +1,7 @@
 import collections
 import pathlib
 
-from PyQt5 import uic, QtCore, QtGui
+from PyQt5 import uic, QtGui
 from PyQt5.QtWidgets import QDialog, QTableWidgetItem
 
 uidir = pathlib.Path(__file__).parent

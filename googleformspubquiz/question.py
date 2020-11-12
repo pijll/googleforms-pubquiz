@@ -41,4 +41,3 @@ class Question:
             counter[answer.answer] += 1
 
         return counter
-

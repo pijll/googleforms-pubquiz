@@ -7,4 +7,3 @@ class Answer:
 
     def is_correct(self):
         return self.answer in self.question.correct_answers
-        

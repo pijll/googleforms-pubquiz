@@ -6,7 +6,6 @@ from PyQt5 import uic
 from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView, QFileDialog
 
-from googleformspubquiz import Section
 from quiz import Quiz
 from ui.SectionWindow import SectionWindow
 from ui.TeamsWindow import TeamsWindow
@@ -45,7 +44,7 @@ class PubQuizWindow(QMainWindow):
             self.widget_sectiontable.setItem(row, 1, score_item)
             score_item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
 
-    def open_section(self, row, column):
+    def open_section(self, row, _column):
         section = self.pubquiz.sections[row]
         section_window = SectionWindow(section=section, directory=self.directory)
         section_window.exec_()
