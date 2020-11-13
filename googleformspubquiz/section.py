@@ -1,5 +1,6 @@
 import csv
 import pathlib
+from types import SimpleNamespace
 from typing import List
 
 import yaml
@@ -7,13 +8,18 @@ import yaml
 from answer import Answer
 from response import Response
 from question import Question
+from team import Team
 
 
 class Section(object):
-    def __init__(self, questions: List[Question] = None, name=None):
+    def __init__(self, questions: List[Question] = None, name=None, quiz=None):
         self.name = name
         self.responses = []
         self.questions = questions or []
+        self.quiz=None
+
+        if quiz is not None:
+            quiz.add_section(self)
 
     def set_header(self, header: List[str]):
         timestamp, team, *questions = header
@@ -21,9 +27,10 @@ class Section(object):
             self.questions.append(Question(question))
 
     def add_response(self, response: List[str]):
-        timestamp, team, *answers_as_strings = response
-        answers = [Answer(question=self.questions[i], answer=a) for i, a in enumerate(answers_as_strings)]
-        response = Response(timestamp=timestamp, team=team, answers=answers)
+        parsed_line = self.read_line(response)
+        answers = [Answer(question=self.questions[i], answer=a) for i, a in enumerate(parsed_line.fields)]
+        team = self.get_team(parsed_line.team_id, parsed_line.team_name)
+        response = Response(timestamp=parsed_line.timestamp, team=team, answers=answers)
         self.responses.append(response)
 
     def set_correct_answers(self, correct_answers):
@@ -31,8 +38,8 @@ class Section(object):
             question.add_correct_answer(correct_answer)
 
     @classmethod
-    def read_csv(cls, infile, name=None):
-        section = Section(name=name)
+    def read_csv(cls, infile, name=None, quiz=None, teamid_column=None, teamname_column=None):
+        section = Section(name=name, quiz=quiz)
         csv_reader = csv.reader(infile)
         header = next(csv_reader)
         section.set_header(header)
@@ -100,3 +107,28 @@ class Section(object):
 
         for question, correct_answers in zip(self.questions, data_loaded):
             question.correct_answers = correct_answers
+
+    def get_team(self, team_id, team_name):
+        if self.quiz:
+            return self.quiz.get_team(team_id, team_name)
+        else:
+            return Team(team_id, team_name)
+
+    def read_line(self, csv_line):
+        if self.quiz:
+            return self._read_line(csv_line, self.quiz.teamid_column, self.quiz.teamname_column)
+        else:
+            return self._read_line(csv_line)
+
+    @staticmethod
+    def _read_line(csv_line, teamid_column=None, teamname_column=None):
+        timestamp = csv_line[0]
+        if teamid_column is None:
+            teamid_column = 1
+        team_id = csv_line[teamid_column]
+
+        team_name = csv_line[teamname_column] if teamname_column is not None else team_id
+
+        fields = [elt for i, elt in enumerate(csv_line) if i not in [0, teamid_column, teamname_column]]
+
+        return SimpleNamespace(timestamp=timestamp, team_id=team_id, team_name=team_name, fields=fields)

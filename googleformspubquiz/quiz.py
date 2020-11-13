@@ -3,12 +3,34 @@ import io
 import pathlib
 import zipfile
 
+from team import Team
 from section import Section
 
 
 class Quiz:
-    def __init__(self, sections=None):
+    def __init__(self, sections=None, teamid_column=None, teamname_column=None):
+        self.teamname_column = teamname_column
+        self.teamid_column = teamid_column
+        self._sections = None
         self.sections = sections or []
+        self.teams = []
+
+        for section in self.sections:
+            section.quiz = self
+
+    @property
+    def sections(self):
+        return tuple(self._sections)
+
+    @sections.setter
+    def sections(self, new_sections):
+        self._sections = []
+        for section in new_sections:
+            self.add_section(section)
+
+    def add_section(self, section):
+        self._sections.append(section)
+        section.quiz = self
 
     def scores(self):
         scores_dict = collections.Counter()
@@ -28,8 +50,7 @@ class Quiz:
                 section_name = p.stem
                 if not self.get_section(section_name):
                     with p.open() as infile:
-                        section = Section.read_csv(infile, name=section_name)
-                    self.sections.append(section)
+                        section = Section.read_csv(infile, name=section_name, quiz=self)
 
                     yaml_name = p.with_suffix('.yaml')
                     if yaml_name.exists():
@@ -40,8 +61,7 @@ class Quiz:
                 if not self.get_section(section_name):
                     with zipfile.ZipFile(p, 'r') as zipped_file:
                         with io.TextIOWrapper(zipped_file.open(csv_name, 'r')) as infile:
-                            section = Section.read_csv(infile, name=section_name)
-                        self.sections.append(section)
+                            section = Section.read_csv(infile, name=section_name, quiz=self)
                     yaml_name = p.parent / (section_name + '.yaml')
                     if yaml_name.exists():
                         section.load_answers(yaml_name)
@@ -60,7 +80,12 @@ class Quiz:
     def sections_per_team(self):
         return {team: {
             section: bool(section.response_for_team(team)) for section in self.sections
-        } for team in self.teams()}
+        } for team in self.teams}
 
-    def teams(self):
-        return set.union(*[section.teams() for section in self.sections])
+    def get_team(self, team_id, team_name):
+        for team in self.teams:
+            if team.team_id == team_id:
+                return team
+        new_team = Team(team_id, team_name)
+        self.teams.append(new_team)
+        return new_team

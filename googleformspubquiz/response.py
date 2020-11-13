@@ -6,4 +6,3 @@ class Response:
 
     def score(self):
         return sum(answer.is_correct() for answer in self.answers)
-

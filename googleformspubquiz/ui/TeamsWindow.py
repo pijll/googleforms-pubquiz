@@ -16,7 +16,7 @@ class TeamsWindow(QDialog):
         self.show_teams()
 
     def show_teams(self):
-        teams = self.pubquiz.teams()
+        teams = self.pubquiz.teams
         sections = self.pubquiz.sections_per_team()
 
         self.table_teams.setRowCount(len(teams))
