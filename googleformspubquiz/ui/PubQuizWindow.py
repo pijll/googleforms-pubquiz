@@ -29,7 +29,8 @@ class PubQuizWindow(QMainWindow):
 
     def select_dir(self):
         self.timer.stop()
-        self.directory = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+        # self.directory = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+        self.directory = r'/home/pijll/PycharmProjects/GoogleFormsPubquiz/tests/testdata'
         self.widget_pubquiz_dir.setText(self.directory)
 
         self.pubquiz = Quiz.load_dir(self.directory)

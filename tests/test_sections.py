@@ -88,7 +88,7 @@ class TestReadResponses(unittest.TestCase):
         response = ["2020/10/30 3:08:44 PM GMT+1", "test", "Antwoord 1", "Antwoord 2", "Antwoord 3"]
 
         # ACT
-        section.add_response(response)
+        section.add_response_from_line(response)
 
         # ASSERT
         self.assertEqual(len(section.responses), 1)
@@ -146,7 +146,7 @@ class TestTeams(unittest.TestCase):
         # ASSERT
         self.assertIsInstance(result, Team)
         self.assertEqual(result.team_id, '12')
-        self.assertEqual(result.team_name, 'test team')
+        self.assertEqual(result.name, 'test team')
 
     def test_create_new_team_with_quiz(self):
         quiz = Quiz()
@@ -158,7 +158,7 @@ class TestTeams(unittest.TestCase):
         # ASSERT
         self.assertIsInstance(result, Team)
         self.assertEqual(result.team_id, '12')
-        self.assertEqual(result.team_name, 'test team')
+        self.assertEqual(result.name, 'test team')
 
         self.assertEqual(len(quiz.teams), 1)
 

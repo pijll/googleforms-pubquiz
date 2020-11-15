@@ -2,6 +2,7 @@ import collections
 import io
 import pathlib
 import zipfile
+from typing import List
 
 from team import Team
 from section import Section
@@ -68,8 +69,8 @@ class Quiz:
 
     def leaderboard(self):
         previous_score = None
-        for i, (team, score) in enumerate(sorted(self.scores().items(), key=lambda x: (x[1], x[0]), reverse=True), start=1):
-            yield [str(i) if previous_score is None or previous_score != score else '', team, str(score)]
+        for i, (team, score) in enumerate(sorted(self.scores().items(), key=lambda x: (-x[1], x[0].name)), start=1):
+            yield [str(i) if previous_score is None or previous_score != score else '', team.name, str(score)]
             previous_score = score
 
     def get_section(self, name):
@@ -89,3 +90,29 @@ class Quiz:
         new_team = Team(team_id, team_name)
         self.teams.append(new_team)
         return new_team
+
+    def merge_teams(self, teams_to_merge):
+        try:
+            if not self.can_merge_teams(teams_to_merge):
+                raise Exception('Overlapping sections')
+        except ValueError:
+            pass
+
+        remaining_team = teams_to_merge[0]
+        for team_to_replace in teams_to_merge[1:]:
+            for section in self.sections:
+                section.replace_team(team_to_replace, remaining_team)
+            self.teams.remove(team_to_replace)
+
+    def can_merge_teams(self, teams_to_merge: List[Team]):
+        if len(teams_to_merge) <= 1:
+            return False
+
+        sections_answered = collections.Counter()
+        sections = self.sections_per_team()
+        for team in teams_to_merge:
+            for section, responded in sections[team].items():
+                sections_answered[section] += int(responded)
+
+        max_number_of_answers_per_question = max(sections_answered.values())
+        return max_number_of_answers_per_question <= 1

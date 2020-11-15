@@ -26,11 +26,14 @@ class Section(object):
         for question in questions:
             self.questions.append(Question(question))
 
-    def add_response(self, response: List[str]):
+    def add_response_from_line(self, response: List[str]):
         parsed_line = self.read_line(response)
         answers = [Answer(question=self.questions[i], answer=a) for i, a in enumerate(parsed_line.fields)]
         team = self.get_team(parsed_line.team_id, parsed_line.team_name)
         response = Response(timestamp=parsed_line.timestamp, team=team, answers=answers)
+        self.add_response(response)
+
+    def add_response(self, response: Response):
         self.responses.append(response)
 
     def set_correct_answers(self, correct_answers):
@@ -48,7 +51,7 @@ class Section(object):
             if row[1] == 'Correct answers':
                 section.set_correct_answers(row[2:])
             else:
-                section.add_response(row)
+                section.add_response_from_line(row)
 
         return section
 
@@ -71,10 +74,10 @@ class Section(object):
     def teams(self):
         return {response.team for response in self.responses}
 
-    def change_team_name(self, from_name, to_name):
+    def replace_team(self, team_to_replace, new_team):
         for response in self.responses:
-            if response.team == from_name:
-                response.team = to_name
+            if response.team == team_to_replace:
+                response.team = new_team
 
     def save_answers(self, out_file):
         if isinstance(out_file, str):
