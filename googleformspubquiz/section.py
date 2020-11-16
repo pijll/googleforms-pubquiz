@@ -56,7 +56,7 @@ class Section(object):
         return section
 
     def scores(self):
-        return {response.team: response.score() for response in self.responses}
+        return {team: self.response_for_team(team).score() for team in self.teams()}
 
     def fraction_of_correct_answers(self):
         correct_answers = sum(self.scores().values())
@@ -65,11 +65,14 @@ class Section(object):
         return correct_answers / max_possible_score
 
     def response_for_team(self, team):
-        responses = [response for response in self.responses if response.team == team]
+        responses = sorted(self.responses_for_team(team), key=lambda x: x.timestamp)
         if responses:
             return responses[0]
         else:
             return None
+
+    def responses_for_team(self, team):
+        return {response for response in self.responses if response.team == team}
 
     def teams(self):
         return {response.team for response in self.responses}

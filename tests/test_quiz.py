@@ -210,7 +210,7 @@ def make_teams(teamscores):
     return quiz
 
 
-class TestScoring(unittest.TestCase):
+class TestLeaderboard(unittest.TestCase):
     def test_leaderboard_with_one_team(self):
         quiz = make_teams([[2, 3, 4]])
 

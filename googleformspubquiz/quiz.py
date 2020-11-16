@@ -78,9 +78,9 @@ class Quiz:
             if section.name == name:
                 return section
 
-    def sections_per_team(self):
+    def number_of_responses_per_section_per_team(self):
         return {team: {
-            section: bool(section.response_for_team(team)) for section in self.sections
+            section: len(section.responses_for_team(team)) for section in self.sections
         } for team in self.teams}
 
     def get_team(self, team_id, team_name):
@@ -109,7 +109,7 @@ class Quiz:
             return False
 
         sections_answered = collections.Counter()
-        sections = self.sections_per_team()
+        sections = self.number_of_responses_per_section_per_team()
         for team in teams_to_merge:
             for section, responded in sections[team].items():
                 sections_answered[section] += int(responded)

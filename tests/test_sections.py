@@ -247,5 +247,112 @@ class TestYaml(unittest.TestCase):
         self.assertEqual(list(questions[0].correct_answers), ['Answer 1'])
 
 
+class TestResponsesForTeam(unittest.TestCase):
+    def test_when_team_has_one_response_expect_one_response(self):
+        # ARRANGE
+        section = Section()
+        team = section.get_team('1', 'team 1')
+        response = Response(team=team)
+        section.add_response(response)
+
+        # ACT
+        result = section.responses_for_team(team)
+
+        # ASSERT
+        self.assertEqual(result, {response})
+
+    def test_when_team_has_multiple_responses_expect_all_responses(self):
+        # ARRANGE
+        section = Section()
+        team = section.get_team('1', 'team 1')
+        response1 = Response(team=team)
+        section.add_response(response1)
+        response2 = Response(team=team)
+        section.add_response(response2)
+
+        # ACT
+        result = section.responses_for_team(team)
+
+        # ASSERT
+        self.assertEqual(result, {response1, response2})
+
+    def test_when_team_has_no_responses_expect_empty_set(self):
+        # ARRANGE
+        section = Section()
+        team = section.get_team('1', 'team 1')
+
+        # ACT
+        result = section.responses_for_team(team)
+
+        # ASSERT
+        self.assertEqual(result, set())
+
+
+class TestResponseForTeam(unittest.TestCase):
+    def test_when_team_has_one_response_expect_one_response(self):
+        # ARRANGE
+        section = Section()
+        team = section.get_team('1', 'team 1')
+        response = Response(team=team)
+        section.add_response(response)
+
+        # ACT
+        result = section.response_for_team(team)
+
+        # ASSERT
+        self.assertEqual(result, response)
+
+    def test_when_team_has_multiple_responses_expect_first(self):
+        # ARRANGE
+        section = Section()
+        team = section.get_team('1', 'team 1')
+        response1 = Response(team=team, timestamp='2020/11/01 20:00:00')
+        section.add_response(response1)
+        response2 = Response(team=team, timestamp='2020/11/01 19:00:00')
+        section.add_response(response2)
+        response3 = Response(team=team, timestamp='2020/11/01 21:00:00')
+        section.add_response(response3)
+
+        # ACT
+        result = section.response_for_team(team)
+
+        # ASSERT
+        self.assertEqual(result, response2)
+
+    def test_when_team_has_no_responses_expect_none(self):
+        # ARRANGE
+        section = Section()
+        team = section.get_team('1', 'team 1')
+
+        # ACT
+        result = section.response_for_team(team)
+
+        # ASSERT
+        self.assertEqual(result, None)
+
+
+class TestScoring(unittest.TestCase):
+    def test_when_team_has_multiple_responses_expect_only_score_of_first_response(self):
+        section = Section()
+        team = section.get_team('1', 'team1')
+        response1 = Response(team=team, timestamp='2020/11/01 20:00:00')
+        response1.score = lambda: 5
+        section.add_response(response1)
+
+        response2 = Response(team=team, timestamp='2020/11/01 19:00:00')
+        response2.score = lambda: 4
+        section.add_response(response2)
+
+        response3 = Response(team=team, timestamp='2020/11/01 21:00:00')
+        response3.score = lambda: 3
+        section.add_response(response3)
+
+        # ACT
+        result = section.scores()
+
+        # ASSERT
+        self.assertEqual(result, {team: 4})
+
+
 if __name__ == '__main__':
     unittest.main()
