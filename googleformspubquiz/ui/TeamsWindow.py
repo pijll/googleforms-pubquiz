@@ -21,9 +21,12 @@ class TeamsWindow(QDialog):
         sections = self.pubquiz.number_of_responses_per_section_per_team()
 
         self.table_teams.setRowCount(len(teams))
-        self.table_teams.setColumnCount(len(self.pubquiz.sections) + 1)
+        self.table_teams.setColumnCount(len(self.pubquiz.sections) + 2)
 
-        for col, section in enumerate(self.pubquiz.sections, start=1):
+        self.table_teams.setHorizontalHeaderItem(0, QTableWidgetItem('Team ID'))
+        self.table_teams.setHorizontalHeaderItem(1, QTableWidgetItem('Team Name'))
+
+        for col, section in enumerate(self.pubquiz.sections, start=2):
             header = QTableWidgetItem(section.name)
             self.table_teams.setHorizontalHeaderItem(col, header)
 
@@ -34,12 +37,16 @@ class TeamsWindow(QDialog):
             else:
                 color = QtGui.QColor(255, 200, 200)
 
-            teamname_item = QTableWidgetItem(team.name)
-            teamname_item.setData(Qt.UserRole, team)
-            teamname_item.setBackground(color)
-            self.table_teams.setItem(row, 0, teamname_item)
+            team_id_item = QTableWidgetItem(team.team_id)
+            team_id_item.setData(Qt.UserRole, team)
+            team_id_item.setBackground(color)
+            self.table_teams.setItem(row, 0, team_id_item)
 
-            for col, (section, responded) in enumerate(sections[team].items(), start=1):
+            teamname_item = QTableWidgetItem(team.name)
+            teamname_item.setBackground(color)
+            self.table_teams.setItem(row, 1, teamname_item)
+
+            for col, (section, responded) in enumerate(sections[team].items(), start=2):
                 item = QTableWidgetItem(str(responded))
                 item.setBackground(color)
                 self.table_teams.setItem(row, col, item)

@@ -22,8 +22,8 @@ class Section(object):
             quiz.add_section(self)
 
     def set_header(self, header: List[str]):
-        timestamp, team, *questions = header
-        for question in questions:
+        parsed_header = self.read_line(header)
+        for question in parsed_header.fields:
             self.questions.append(Question(question))
 
     def add_response_from_line(self, response: List[str]):
@@ -40,6 +40,10 @@ class Section(object):
         for question, correct_answer in zip(self.questions, correct_answers):
             question.add_correct_answer(correct_answer)
 
+    def set_correct_answers_from_line(self, row: List[str]):
+        parsed_answers = self.read_line(row)
+        self.set_correct_answers(parsed_answers.fields)
+
     @classmethod
     def read_csv(cls, infile, name=None, quiz=None, teamid_column=None, teamname_column=None):
         section = Section(name=name, quiz=quiz)
@@ -49,7 +53,7 @@ class Section(object):
 
         for row in csv_reader:
             if row[1] == 'Correct answers':
-                section.set_correct_answers(row[2:])
+                section.set_correct_answers_from_line(row)
             else:
                 section.add_response_from_line(row)
 
@@ -62,7 +66,10 @@ class Section(object):
         correct_answers = sum(self.scores().values())
         max_possible_score = len(self.questions) * len(self.responses)
 
-        return correct_answers / max_possible_score
+        if max_possible_score > 0:
+            return correct_answers / max_possible_score
+        else:
+            return 0
 
     def response_for_team(self, team):
         responses = sorted(self.responses_for_team(team), key=lambda x: x.timestamp)
@@ -120,7 +127,7 @@ class Section(object):
         else:
             return Team(team_id, team_name)
 
-    def read_line(self, csv_line):
+    def read_line(self, csv_line: List[str]):
         if self.quiz:
             return self._read_line(csv_line, self.quiz.teamid_column, self.quiz.teamname_column)
         else:

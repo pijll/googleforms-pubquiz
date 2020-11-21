@@ -30,7 +30,10 @@ class Question:
         correct = sum(1 for answer in self.answers if answer.is_correct())
         total = len(self.answers)
 
-        return correct/total
+        if total > 0:
+            return correct/total
+        else:
+            return 0
 
     def answer_list(self):
         counter = collections.Counter()

@@ -40,8 +40,8 @@ class Quiz:
         return scores_dict
 
     @classmethod
-    def load_dir(cls, directory):
-        quiz = Quiz()
+    def load_dir(cls, directory, teamid_column=None, teamname_column=None):
+        quiz = Quiz(teamid_column=teamid_column, teamname_column=teamname_column)
         quiz.update_from_dir(directory)
         return quiz
 
