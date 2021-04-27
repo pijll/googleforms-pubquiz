@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QApplication
 
-from ui.PubQuizWindow import PubQuizWindow
+from ui_qt.PubQuizWindow import PubQuizWindow
 
 app = QApplication([])
 mainwindow = PubQuizWindow()

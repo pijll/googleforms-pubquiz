@@ -7,8 +7,8 @@ from PyQt5.QtCore import QTimer, Qt
 from PyQt5.QtWidgets import QMainWindow, QTableWidgetItem, QHeaderView, QFileDialog
 
 from quiz import Quiz
-from ui.SectionWindow import SectionWindow
-from ui.TeamsWindow import TeamsWindow
+from ui_qt.SectionWindow import SectionWindow
+from ui_qt.TeamsWindow import TeamsWindow
 
 uidir = pathlib.Path(__file__).parent
 
