@@ -46,7 +46,7 @@ class Quiz:
         return quiz
 
     def update_from_dir(self, directory):
-        for p in pathlib.Path(directory).iterdir():
+        for p in sorted(pathlib.Path(directory).iterdir()):
             if p.is_file() and p.suffix == '.csv':
                 section_name = p.stem
                 if not self.get_section(section_name):

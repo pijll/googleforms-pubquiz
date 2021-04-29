@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PubQuiz</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
+</head>
+<body>
+Hello world
+<ul>
+    {% for q in quizzes %}
+    <li><a href="{{q.1}}">{{q.0}}</a></li>
+    {% endfor %}
+</ul>
+</body>
+</html>

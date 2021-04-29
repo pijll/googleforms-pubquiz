@@ -3,12 +3,21 @@ import collections
 
 class Question:
     def __init__(self, name=None, correct_answers=None, section=None, number_in_section=None):
-        self.number_in_section = number_in_section
-        self.section = section
+        self.section = None
         self.name = name
         self._correct_answers = None
         self.correct_answers = correct_answers or {}
         self.answers = []
+
+        if section is not None:
+            section.add_question(self)
+
+    @property
+    def number_in_section(self):
+        if self.section is None:
+            return 0
+        else:
+            return self.section.questions.index(self) + 1
 
     @property
     def correct_answers(self):

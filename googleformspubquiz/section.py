@@ -21,10 +21,21 @@ class Section(object):
         if quiz is not None:
             quiz.add_section(self)
 
+    @property
+    def number_in_quiz(self):
+        if self.quiz is None:
+            return 0
+        else:
+            return self.quiz.sections.index(self) + 1
+
+    def add_question(self, question):
+        self.questions.append(question)
+        question.section = self
+
     def set_header(self, header: List[str]):
         parsed_header = self.read_line(header)
         for question in parsed_header.fields:
-            self.questions.append(Question(question))
+            Question(question, section=self)
 
     def add_response_from_line(self, response: List[str]):
         parsed_line = self.read_line(response)

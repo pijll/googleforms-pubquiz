@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{quiz}}: {{section}} {{question_nr}}</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
+</head>
+<body>
+<h1>Section "{{section}}" Question {{question_nr}}</h1>
+<div>{{correct}}% correct</div>
+<div>{{question_text}}</div>
+<h2>Answers</h2>
+<form method="post">
+    {{answer_table}}
+    <input type="submit" name="previous" value="Previous"{% if question_nr == 1 %} disabled="disabled"{% endif %}>
+    <input type="submit" name="save" value="Save">
+    <input type="submit" name="close" value="Close">
+    <input type="submit" name="next" value="Next"{% if last_question %} disabled="disabled"{% endif %}>
+</form>
+</body>
+</html>

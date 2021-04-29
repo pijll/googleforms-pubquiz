@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pubquiz "{{quiz_name}}"</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/style.css') }}">
+</head>
+<body>
+<h1>Pubquiz "{{quiz_name}}"</h1>
+<h2>Sections</h2>
+{{section_table|safe}}
+<h2>Leaderboard</h2>
+{{team_table|safe}}
+</body>
+</html>

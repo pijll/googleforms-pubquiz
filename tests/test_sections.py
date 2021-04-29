@@ -18,6 +18,30 @@ class TestInit(unittest.TestCase):
         self.assertEqual(section.quiz, quiz)
 
 
+class TestNumberInQuiz(unittest.TestCase):
+    def test_numberinquiz_without_quiz(self):
+        # ARRANGE
+        section = Section()
+
+        # ACT
+        result = section.number_in_quiz
+
+        # ASSERT
+        self.assertEqual(result, 0)
+
+    def test_numberinquiz_with_quiz(self):
+        # ARRANGE
+        quiz = Quiz()
+        Section(quiz=quiz)
+        section = Section(quiz=quiz)
+
+        # ACT
+        result = section.number_in_quiz
+
+        # ASSERT
+        self.assertEqual(result, 2)
+
+
 class TestReadLine(unittest.TestCase):
     def test_with_defaults(self):
         line = ['Date', 'Team', 'Answer1', 'Answer2', 'Answer3']

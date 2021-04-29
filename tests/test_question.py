@@ -1,6 +1,43 @@
 import unittest
 
-from googleformspubquiz import Question, Answer
+from googleformspubquiz import Question, Answer, Section
+
+
+class TestCreateQuestion(unittest.TestCase):
+    def test_create_question_in_section(self):
+        # ARRANGE
+        section = Section(name='S1')
+
+        # ACT
+        question = Question(name='What?', section=section)
+
+        # ASSERT
+        self.assertEqual(question.section, section)
+        self.assertEqual(section.questions, [question])
+
+
+class TestNumberInSection(unittest.TestCase):
+    def test_numberinsection_without_section(self):
+        # ARRANGE
+        question = Question()
+
+        # ACT
+        result = question.number_in_section
+
+        # ASSERT
+        self.assertEqual(result, 0)
+
+    def test_numberinsection_with_section(self):
+        # ARRANGE
+        section = Section()
+        Question(section=section)
+        question = Question(section=section)
+
+        # ACT
+        result = question.number_in_section
+
+        # ASSERT
+        self.assertEqual(result, 2)
 
 
 class TestCorrectAnswers(unittest.TestCase):
