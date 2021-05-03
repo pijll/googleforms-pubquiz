@@ -197,6 +197,37 @@ class TestLoadFromDirectory(unittest.TestCase):
         self.assertIsInstance(result.teams[0], Team)
         self.assertEqual(result.teams[0].team_id, 'test')
 
+    def test_load_with_ini(self):
+        # ARRANGE
+        testdir = pathlib.Path(__file__).parent / 'testdata' / 'test_load_csv_with_ini'
+        os.makedirs(testdir, exist_ok=True)
+        for file in testdir.iterdir():
+            if file.suffix in ['.csv', '.zip']:
+                file.unlink()
+
+        csv_file = testdir / 'round1.csv'
+        csv_file.write_text(textwrap.dedent("""\
+            "Timestamp","Team","Teamnaam","Vraag 1","Vraag 2","Vraag 3"
+            "2020/10/30 3:08:44 PM GMT+1","test","test-team","Antwoord 5","Antwoord 2","Antwoord 1"
+        """))
+
+        ini_file = testdir / 'quiz.ini'
+        ini_file.write_text(textwrap.dedent("""\
+            [columns]
+            # Column numbers are zero-based
+            # team_id: Column of team-id; this field is used to link sections. Default: 1
+            team_id = 1
+            # team_name: Column of team name. Default: the same as team_id
+            team_name = 2
+        """))
+
+        # ACT
+        result = Quiz.load_dir_with_ini(testdir)
+
+        # ASSERT
+        self.assertEqual(result.teamid_column, 1)
+        self.assertEqual(result.teamname_column, 2)
+
 
 def make_teams(teamscores):
     quiz = Quiz()

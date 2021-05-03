@@ -2,6 +2,7 @@ import collections
 import io
 import pathlib
 import zipfile
+from configparser import ConfigParser
 from typing import List
 
 from team import Team
@@ -38,6 +39,22 @@ class Quiz:
         for section in self.sections:
             scores_dict.update(section.scores())
         return scores_dict
+
+    @classmethod
+    def load_dir_with_ini(cls, directory):
+        ini_file = directory / 'quiz.ini'
+        teamid_column = None
+        teamname_column = None
+        if ini_file.exists():
+            config = ConfigParser()
+            config.read(ini_file)
+            if 'columns' in config:
+                teamid_column = config['columns'].getint('team_id', None)
+                teamname_column = config['columns'].getint('team_name', None)
+
+        quiz = Quiz(teamid_column=teamid_column, teamname_column=teamname_column)
+        quiz.update_from_dir(directory)
+        return quiz
 
     @classmethod
     def load_dir(cls, directory, teamid_column=None, teamname_column=None):

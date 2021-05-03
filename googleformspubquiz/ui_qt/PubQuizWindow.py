@@ -32,7 +32,7 @@ class PubQuizWindow(QMainWindow):
         self.directory = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
         self.widget_pubquiz_dir.setText(self.directory)
 
-        self.pubquiz = Quiz.load_dir(self.directory, teamid_column=2, teamname_column=1)
+        self.pubquiz = Quiz.load_dir_with_ini(self.directory)
         self.refresh()
         self.timer.start(3000)
 
